@@ -25,13 +25,19 @@ def lambda_handler(event, context):
 
         df = pd.read_csv(response_s3['Body'], sep=",")
 
-        print(df.head(2))
+        print("DataFrame before transformation: ", df.head(2))
 
         df_filtered = df[df['status'] == 'delivered']
 
+        print("DataFrame after transformation: ", df_filtered.head(2))
+
         json_object = df_filtered.to_json(orient ='records')
 
+        print("json object: ", json_object)
+
         file_name = datetime.date.today().strftime('%Y-%m-%d') + '-processed.json'
+
+        print("File name: ", file_name)
 
         response = s3_client.put_object(Body=json.dumps(json_object), Bucket='doordash-target-zn-aws', Key=file_name)
 
