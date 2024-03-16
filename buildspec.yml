@@ -22,3 +22,4 @@ phases:
       - echo "Updating lambda function via s3..."
       - aws lambda update-function-code --function-name  doordash-lambda-function --s3-bucket store-lambda-code-cicd --s3-key package_deployment.zip
       - echo "Deployment Complete !!!"
+      
