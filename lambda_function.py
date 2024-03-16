@@ -23,7 +23,7 @@ def lambda_handler(event, context):
 
         print(response_s3['Body'])
 
-        df = pd.read_csv(response_s3['Body'], sep=",")
+        df = pd.read_json(response_s3['Body'], lines=True)
 
         print("DataFrame before transformation: ", df.head(2))
 
