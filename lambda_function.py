@@ -13,15 +13,17 @@ def lambda_handler(event, context):
 
     try:
 
-        bucket_name = event['Records']['s3']['bucket']['name']
-        key_name = event['Records']['s3']['object']['key']
+        bucket_name = event['Records'][0]['s3']['bucket']['name']
+        key_name = event['Records'][0]['s3']['object']['key']
 
         print("Bucket name: ", bucket_name)
         print("Object name: ", key_name)
 
-        s3_path = s3_client.get_object(Bucket=bucket_name, Key=key_name)
+        response_s3 = s3_client.get_object(Bucket=bucket_name, Key=key_name)
 
-        df = pd.read_csv(s3_path['Body'], sep=",")
+        print(response_s3['Body'])
+
+        df = pd.read_csv(response_s3['Body'], sep=",")
 
         print(df.head(2))
 
@@ -43,6 +45,6 @@ def lambda_handler(event, context):
 
     except Exception as e:
         print(e)
-        subject = "Failed to process the file."
-        message_body = "FAILED - Daily Data Processing"
+        subject = "FAILED - Daily Data Processing"
+        message_body = "Failed to process the file."
         sns_response = sns_client.publish(TargetArn=sns_arn, Message=message_body, Subject=subject, MessageStructure='text')
